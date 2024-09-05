@@ -13,7 +13,6 @@
                 <img class="card-img-top" src="{{ product.image|media_url }}" alt="{{ product.name }}">
                 <div class="card-body">
                     <h5 class="card-title">{{ product.name }}</h5>
-                    <!-- Обрезаем описание до 100 символов и добавляем многоточие, если описание длиннее -->
                     <p class="card-text">
                         {{ product.description|slice:":100" }}{% if product.description|length > 100 %}...{% endif %}
                     </p>
