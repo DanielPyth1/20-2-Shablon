@@ -1,0 +1,24 @@
+[
+  {
+    "model": "catalog.product",
+    "pk": 1,
+    "fields": {
+      "name": "Smartphone",
+      "description": "Latest model smartphone",
+      "price": "699.99",
+      "image": "",
+      "category": 1
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 2,
+    "fields": {
+      "name": "E-book Reader",
+      "description": "Compact and lightweight e-book reader",
+      "price": "129.99",
+      "image": "",
+      "category": 2
+    }
+  }
+]
