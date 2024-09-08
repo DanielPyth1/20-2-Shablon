@@ -8,8 +8,8 @@
 <h1>Список продуктов</h1>
 <div class="row">
     {% for product in object_list %}
-        <div class="col-md-4">
-            <div class="card mb-4">
+        <div class="col-md-4 mb-4">
+            <div class="card">
                 <img class="card-img-top" src="{{ product.image|media_url }}" alt="{{ product.name }}">
                 <div class="card-body">
                     <h5 class="card-title">{{ product.name }}</h5>
