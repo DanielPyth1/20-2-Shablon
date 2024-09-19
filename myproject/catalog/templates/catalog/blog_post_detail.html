@@ -1,15 +1,11 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ post.title }}{% endblock %}
-
 {% block content %}
-<div class="blog-post-detail">
-    <h1>{{ post.title }}</h1>
-    {% if post.preview %}
-        <img src="{{ post.preview.url }}" alt="Preview image for {{ post.title }}">
-    {% endif %}
-    <p>{{ post.content }}</p>
-    <p><small>Published on: {{ post.created_at|date:"Y-m-d" }}</small></p>
-    <p><small>View count: {{ post.view_count }}</small></p>
-</div>
+<h1>{{ object.title }}</h1>
+{% if object.preview %}
+    <img src="{{ object.preview.url }}" alt="{{ object.title }} image" style="max-width: 100%;">
+{% endif %}
+<p>{{ object.content }}</p>
+<p>Published on: {{ object.created_at|date:"Y-m-d" }}</p>
+<p>View count: {{ object.view_count }}</p>
 {% endblock %}
