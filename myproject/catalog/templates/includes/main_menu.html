@@ -10,6 +10,9 @@
             <li class="nav-item {% if request.path == '/catalog/' %}active{% endif %}">
                 <a class="nav-link" href="{% url 'product_list' %}">Products</a>
             </li>
+            <li class="nav-item {% if request.path == '/blog/' %}active{% endif %}">
+                <a class="nav-link" href="{% url 'blog_post_list' %}">Blog</a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">About</a>
             </li>

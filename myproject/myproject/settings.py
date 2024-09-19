@@ -53,7 +53,7 @@ ROOT_URLCONF = 'myproject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'catalog/templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'catalog', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -65,9 +65,6 @@ TEMPLATES = [
         },
     },
 ]
-
-
-
 
 WSGI_APPLICATION = 'myproject.wsgi.application'
 
@@ -84,7 +81,6 @@ DATABASES = {
         'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
