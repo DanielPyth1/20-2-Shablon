@@ -3,13 +3,12 @@
 {% block title %}Blog Posts{% endblock %}
 
 {% block content %}
-  <h1>Blog Posts</h1>
-  <ul>
-  {% for post in object_list %}
-    <li>
-      <h2><a href="{% url 'blog_post_detail' post.pk %}">{{ post.title }}</a></h2>
-      <p>{{ post.content|slice:":200" }}...</p>
-    </li>
-  {% endfor %}
-  </ul>
+<h1>Blog Posts</h1>
+<ul>
+    {% for post in object_list %}
+    <h2><a href="{% url 'blog_post_detail' slug=post.slug %}">{{ post.title }}</a></h2>
+    <p>{{ post.summary }}</p>
+    {% endfor %}
+
+</ul>
 {% endblock %}

@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from .models import Product, BlogPost
@@ -31,9 +32,9 @@ class BlogPostDetailView(DetailView):
     template_name = 'catalog/blog_post_detail.html'
 
     def get_object(self, queryset=None):
-        obj = super().get_object(queryset=queryset)
+        obj = get_object_or_404(BlogPost, slug=self.kwargs.get('slug'))
         obj.view_count += 1
-        obj.save()
+        obj.save(update_fields=['view_count'])
         return obj
 
 
