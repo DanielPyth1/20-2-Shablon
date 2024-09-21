@@ -40,13 +40,16 @@ class BlogPostDetailView(DetailView):
 class BlogPostCreateView(CreateView):
     model = BlogPost
     template_name = 'catalog/blog_post_form.html'
-    fields = ['title', 'slug', 'content', 'preview', 'is_published']
+    fields = ['title', 'content', 'preview', 'is_published']
 
     def form_valid(self, form):
         instance = form.save(commit=False)
         instance.slug = slugify(instance.title)
         instance.save()
         return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('blog_post_detail', args=[self.object.slug])
 
 
 class BlogPostUpdateView(UpdateView):
@@ -55,7 +58,7 @@ class BlogPostUpdateView(UpdateView):
     fields = ['title', 'slug', 'content', 'preview', 'is_published']
 
     def get_success_url(self):
-        return reverse_lazy('blog_post_detail', args=[self.object.id])
+        return reverse_lazy('blog_post_detail', args=[self.object.slug])
 
 
 class BlogPostDeleteView(DeleteView):
