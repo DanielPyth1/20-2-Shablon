@@ -49,6 +49,7 @@ class BlogPostCreateView(CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
+        from django.urls import reverse
         return reverse('blog_post_detail', args=[self.object.slug])
 
 
