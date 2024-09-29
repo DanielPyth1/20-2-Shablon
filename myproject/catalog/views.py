@@ -4,7 +4,7 @@ from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
 from django.db.models import F
-from .models import Product, BlogPost
+from .models import Product, BlogPost, Version
 from .forms import ProductForm
 from django.utils.text import slugify
 
@@ -18,6 +18,12 @@ class ProductListView(ListView):
     model = Product
     template_name = 'catalog/product_list.html'
     context_object_name = 'object_list'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        for product in context[self.context_object_name]:
+            product.current_version = Version.objects.filter(product=product, is_current=True).first()
+        return context
 
 class ProductCreateView(CreateView):
     model = Product

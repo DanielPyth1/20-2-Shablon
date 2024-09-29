@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 
-{% load media_tags %}
+{% load static %} <!-- Загрузите статические файлы, если они используются в base.html -->
+{% load media_tags %} <!-- Убедитесь, что этот тег существует и подключен правильно -->
 
-{% block title %}Product List{% endblock %}
+{% block title %}Список продуктов{% endblock %}
 
 {% block content %}
 <h1>Список продуктов</h1>
@@ -10,13 +11,22 @@
     {% for product in object_list %}
         <div class="col-md-4 mb-4">
             <div class="card">
-                <img class="card-img-top" src="{{ product.image|media_url }}" alt="{{ product.name }}">
+                {% if product.image %}
+                    <img class="card-img-top" src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% else %}
+                    <img class="card-img-top" src="{% static 'path/to/default/image.jpg' %}" alt="Default Image">
+                {% endif %}
                 <div class="card-body">
                     <h5 class="card-title">{{ product.name }}</h5>
                     <p class="card-text">
                         {{ product.description|slice:":100" }}{% if product.description|length > 100 %}...{% endif %}
                     </p>
                     <p class="card-text">Цена: {{ product.price }} ₽</p>
+                    {% if product.current_version %}
+                        <p class="card-text">Текущая версия: {{ product.current_version.version_name }}</p>
+                    {% else %}
+                        <p class="card-text">Текущая версия: Нет активной версии</p>
+                    {% endif %}
                     <a href="{% url 'product_detail' product.pk %}" class="btn btn-primary">Подробнее</a>
                 </div>
             </div>
