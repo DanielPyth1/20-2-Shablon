@@ -8,7 +8,6 @@ from .models import Product, BlogPost, Version
 from .forms import ProductForm
 from django.utils.text import slugify
 
-# Представления для продуктов
 class ProductDetailView(DetailView):
     model = Product
     template_name = 'catalog/product_detail.html'
@@ -17,11 +16,11 @@ class ProductDetailView(DetailView):
 class ProductListView(ListView):
     model = Product
     template_name = 'catalog/product_list.html'
-    context_object_name = 'object_list'
+    context_object_name = 'products'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        for product in context[self.context_object_name]:
+        for product in context['products']:
             product.current_version = Version.objects.filter(product=product, is_current=True).first()
         return context
 
