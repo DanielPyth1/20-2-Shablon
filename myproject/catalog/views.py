@@ -5,13 +5,21 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
 from django.db.models import F
 from .models import Product, BlogPost, Version
-from .forms import ProductForm
+from .forms import ProductForm, VersionForm
 from django.utils.text import slugify
 
 class ProductDetailView(DetailView):
     model = Product
     template_name = 'catalog/product_detail.html'
     context_object_name = 'product'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product = self.get_object()  # Получаем продукт
+        product.current_version = Version.objects.filter(product=product, is_current=True).first()  # Находим текущую версию
+        context['product'] = product
+        return context
+
 
 class ProductListView(ListView):
     model = Product
@@ -41,7 +49,6 @@ class ProductDeleteView(DeleteView):
     template_name = 'catalog/product_confirm_delete.html'
     success_url = reverse_lazy('product_list')
 
-# Представления для блог-постов
 class BlogPostListView(ListView):
     model = BlogPost
     template_name = 'catalog/blog_post_list.html'
@@ -84,3 +91,31 @@ class BlogPostDeleteView(DeleteView):
     model = BlogPost
     template_name = 'catalog/blog_post_confirm_delete.html'
     success_url = reverse_lazy('blog_post_list')
+
+# Представление для создания версии
+class VersionCreateView(CreateView):
+    model = Version
+    form_class = VersionForm
+    template_name = 'catalog/version_form.html'
+
+    def form_valid(self, form):
+        product = get_object_or_404(Product, pk=self.kwargs['pk'])  # Получаем продукт
+        form.instance.product = product  # Связываем версию с продуктом
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('product_detail', args=[self.kwargs['pk']])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['product'] = get_object_or_404(Product, pk=self.kwargs['pk'])  # Передаем продукт в шаблон
+        return context
+
+# Представление для редактирования версии
+class VersionUpdateView(UpdateView):
+    model = Version
+    form_class = VersionForm
+    template_name = 'catalog/version_form.html'
+
+    def get_success_url(self):
+        return reverse_lazy('product_detail', args=[self.object.product.pk])

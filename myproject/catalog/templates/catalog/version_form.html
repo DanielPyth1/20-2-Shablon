@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ view.object.version_number|default:"Создание новой версии" }}{% endblock %}
+
+{% block content %}
+<h1>{{ view.object.version_number|default:"Создание новой версии" }}</h1>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="form-group">
+        {{ form.version_number.label_tag }}
+        {{ form.version_number }}
+    </div>
+
+    <div class="form-group">
+        {{ form.version_name.label_tag }}
+        {{ form.version_name }}
+    </div>
+
+    <div class="form-group d-flex align-items-center">
+        {{ form.is_current }}
+        <label class="form-check-label ml-2" for="{{ form.is_current.id_for_label }}">
+            Is current
+        </label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+</form>
+
+<a href="{% url 'product_detail' object.product.pk %}" class="btn btn-secondary mt-3">Вернуться к продукту</a>
+{% endblock %}

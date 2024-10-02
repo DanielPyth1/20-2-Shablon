@@ -73,12 +73,24 @@ class VersionForm(FormMixin, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(VersionForm, self).__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-md-2'
+        self.helper.field_class = 'col-md-10'
+
         self.helper.layout = Layout(
             Row(
                 Column('version_number', css_class='col-md-6 mb-3'),
                 Column('version_name', css_class='col-md-6 mb-3'),
-                css_class='row'
             ),
-            'is_current',
-            Submit('submit', 'Save', css_class='btn btn-success mt-3')
+            Row(
+                Column('is_current', css_class='col-md-6 mb-3'),
+            ),
+            Submit('submit', 'Сохранить', css_class='btn btn-primary')
         )
+
+        self.fields['version_number'].widget.attrs.update({'class': 'form-control'})
+        self.fields['version_name'].widget.attrs.update({'class': 'form-control'})
+        self.fields['is_current'].widget.attrs.update({'class': 'form-check-input'})
