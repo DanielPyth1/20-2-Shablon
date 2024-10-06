@@ -17,7 +17,7 @@ class ProductDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         product = self.get_object()
-        product.current_version = Version.objects.filter(product=product, is_current=True).first()  # Находим текущую версию
+        product.current_version = Version.objects.filter(product=product, is_current=True).first()
         context['product'] = product
         return context
 
@@ -102,8 +102,8 @@ class VersionCreateView(LoginRequiredMixin, CreateView):
     template_name = 'catalog/version_form.html'
 
     def form_valid(self, form):
-        product = get_object_or_404(Product, pk=self.kwargs['pk'])  # Получаем продукт
-        form.instance.product = product  # Связываем версию с продуктом
+        product = get_object_or_404(Product, pk=self.kwargs['pk'])
+        form.instance.product = product
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -111,7 +111,7 @@ class VersionCreateView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['product'] = get_object_or_404(Product, pk=self.kwargs['pk'])  # Передаем продукт в шаблон
+        context['product'] = get_object_or_404(Product, pk=self.kwargs['pk'])
         return context
 
 class VersionUpdateView(LoginRequiredMixin, UpdateView):
