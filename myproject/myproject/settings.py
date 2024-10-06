@@ -55,7 +55,9 @@ ROOT_URLCONF = 'myproject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'catalog', 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'catalog', 'templates'),
+                 os.path.join(BASE_DIR, 'users', 'templates')],
+
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -129,3 +131,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 AUTH_USER_MODEL = 'users.CustomUser'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'danieelpark@gmail.com'
+EMAIL_HOST_PASSWORD = 'RaD960oN'
+DEFAULT_FROM_EMAIL = 'danieelpark@gmail.com'
+
+LOGIN_REDIRECT_URL = '/catalog/'
