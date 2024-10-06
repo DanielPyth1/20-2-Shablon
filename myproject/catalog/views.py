@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
@@ -15,11 +16,10 @@ class ProductDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        product = self.get_object()  # Получаем продукт
+        product = self.get_object()
         product.current_version = Version.objects.filter(product=product, is_current=True).first()  # Находим текущую версию
         context['product'] = product
         return context
-
 
 class ProductListView(ListView):
     model = Product
@@ -32,19 +32,23 @@ class ProductListView(ListView):
             product.current_version = Version.objects.filter(product=product, is_current=True).first()
         return context
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     template_name = 'catalog/product_form.html'
     success_url = reverse_lazy('product_list')
 
-class ProductUpdateView(UpdateView):
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
+
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     template_name = 'catalog/product_form.html'
     success_url = reverse_lazy('product_list')
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     template_name = 'catalog/product_confirm_delete.html'
     success_url = reverse_lazy('product_list')
@@ -65,7 +69,7 @@ class BlogPostDetailView(DetailView):
         BlogPost.objects.filter(pk=obj.pk).update(view_count=F('view_count') + 1)
         return obj
 
-class BlogPostCreateView(CreateView):
+class BlogPostCreateView(LoginRequiredMixin, CreateView):
     model = BlogPost
     template_name = 'catalog/blog_post_form.html'
     fields = ['title', 'content', 'preview', 'is_published']
@@ -79,7 +83,7 @@ class BlogPostCreateView(CreateView):
     def get_success_url(self):
         return reverse('blog_post_detail', args=[self.object.slug])
 
-class BlogPostUpdateView(UpdateView):
+class BlogPostUpdateView(LoginRequiredMixin, UpdateView):
     model = BlogPost
     template_name = 'catalog/blog_post_form.html'
     fields = ['title', 'slug', 'content', 'preview', 'is_published']
@@ -87,13 +91,12 @@ class BlogPostUpdateView(UpdateView):
     def get_success_url(self):
         return reverse_lazy('blog_post_detail', args=[self.object.slug])
 
-class BlogPostDeleteView(DeleteView):
+class BlogPostDeleteView(LoginRequiredMixin, DeleteView):
     model = BlogPost
     template_name = 'catalog/blog_post_confirm_delete.html'
     success_url = reverse_lazy('blog_post_list')
 
-# Представление для создания версии
-class VersionCreateView(CreateView):
+class VersionCreateView(LoginRequiredMixin, CreateView):
     model = Version
     form_class = VersionForm
     template_name = 'catalog/version_form.html'
@@ -111,8 +114,7 @@ class VersionCreateView(CreateView):
         context['product'] = get_object_or_404(Product, pk=self.kwargs['pk'])  # Передаем продукт в шаблон
         return context
 
-# Представление для редактирования версии
-class VersionUpdateView(UpdateView):
+class VersionUpdateView(LoginRequiredMixin, UpdateView):
     model = Version
     form_class = VersionForm
     template_name = 'catalog/version_form.html'
