@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
@@ -53,7 +54,7 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('product_list')
 
     def form_valid(self, form):
-        form.instance.owner = self.request.user
+        form.instance.owner = self.request.user  # Привязываем продукт к текущему пользователю
         return super().form_valid(form)
 
 
@@ -62,6 +63,13 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
     form_class = ProductForm
     template_name = 'catalog/product_form.html'
     success_url = reverse_lazy('product_list')
+
+    def dispatch(self, request, *args, **kwargs):
+        # Проверка: является ли текущий пользователь владельцем продукта
+        product = self.get_object()
+        if product.owner != request.user:
+            raise PermissionDenied  # Если не владелец, запрещаем доступ
+        return super().dispatch(request, *args, **kwargs)
 
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):

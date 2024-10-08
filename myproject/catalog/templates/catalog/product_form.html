@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Редактирование продукта{% endblock %}
+
+{% block content %}
+<h1>Редактировать продукт</h1>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+</form>
+
+<div class="mt-4">
+    <a href="{% url 'product_list' %}" class="btn btn-secondary">Назад к списку продуктов</a>
+</div>
+{% endblock %}

@@ -25,6 +25,13 @@
         <p>Нет активной версии</p>
     {% endif %}
 
+    <!-- Проверка на владельца продукта или на наличие прав редактирования у пользователя -->
+    {% if product.owner == user or perms.catalog.change_product %}
+        <a href="{% url 'product_update' product.pk %}" class="btn btn-primary">Редактировать продукт</a>
+        <a href="{% url 'product_delete' product.pk %}" class="btn btn-danger">Удалить продукт</a>
+    {% endif %}
+
+    <!-- Проверка прав пользователя на отмену публикации -->
     {% if perms.catalog.can_unpublish_product %}
         <form method="post" action="{% url 'unpublish_product' product.pk %}">
             {% csrf_token %}
