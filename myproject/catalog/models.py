@@ -26,12 +26,17 @@ class Product(models.Model):
         related_name='products'
     )
 
+    is_published = models.BooleanField(default=False, verbose_name='Опубликован')
+
     def __str__(self):
         return self.name
 
     class Meta:
         verbose_name = 'Product'
         verbose_name_plural = 'Products'
+        permissions = [
+            ("can_unpublish_product", "Can unpublish product"),
+        ]
 
 
 class Version(models.Model):

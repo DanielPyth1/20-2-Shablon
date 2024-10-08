@@ -7,6 +7,14 @@
 <p>{{ product.description }}</p>
 <p>Цена: {{ product.price }} ₽</p>
 
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
 <div class="buttons mt-3">
     <a href="{% url 'version_add' product.pk %}" class="btn btn-secondary">Добавить версию</a>
 
@@ -15,6 +23,13 @@
         <a href="{% url 'version_edit' product.current_version.pk %}" class="btn btn-warning">Редактировать текущую версию</a>
     {% else %}
         <p>Нет активной версии</p>
+    {% endif %}
+
+    {% if perms.catalog.can_unpublish_product %}
+        <form method="post" action="{% url 'unpublish_product' product.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-warning">Отменить публикацию</button>
+        </form>
     {% endif %}
 </div>
 
