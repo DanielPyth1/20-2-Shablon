@@ -6,11 +6,13 @@ from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
 from django.db.models import F
-from .models import Product, BlogPost, Version
+from .models import Product, BlogPost, Version, Category
 from .forms import ProductForm, VersionForm
 from django.utils.text import slugify
 from django.contrib.auth.decorators import permission_required
 from django.contrib import messages
+from .services import get_cached_categories
+
 
 @permission_required('catalog.can_unpublish_product', raise_exception=True)
 def unpublish_product(request, pk):
@@ -152,3 +154,12 @@ class VersionUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('product_detail', args=[self.object.product.pk])
+
+
+class CategoryListView(ListView):
+    model = Category
+    template_name = 'catalog/category_list.html'
+    context_object_name = 'categories'
+
+    def get_queryset(self):
+        return get_cached_categories()
