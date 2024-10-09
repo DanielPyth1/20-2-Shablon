@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 import os
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,10 +20,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-78!-xd+#1(4rif*r!(_%2i+*xfk_@zxic=(4^55n-@&40tu$2o'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = []
 
@@ -37,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'catalog',
     'crispy_forms',
-    'users'
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -57,7 +58,6 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'catalog', 'templates'),
                  os.path.join(BASE_DIR, 'users', 'templates')],
-
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -78,11 +78,11 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Daniel_base',
-        'USER': 'postgres',
-        'PASSWORD': 'RaD960oN',
-        'HOST': 'localhost',  # Или другой адрес
-        'PORT': '5432',
+        'NAME': config('DATABASE_NAME'),
+        'USER': config('DATABASE_USER'),
+        'PASSWORD': config('DATABASE_PASSWORD'),
+        'HOST': config('DATABASE_HOST', default='localhost'),
+        'PORT': config('DATABASE_PORT', default='5432'),
     }
 }
 
@@ -136,16 +136,16 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'danieelpark@gmail.com'
-EMAIL_HOST_PASSWORD = 'RaD960oN'
-DEFAULT_FROM_EMAIL = 'danieelpark@gmail.com'
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = config('EMAIL_HOST_USER')
 
 LOGIN_REDIRECT_URL = '/catalog/'
 
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'LOCATION': config('REDIS_URL'),
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }

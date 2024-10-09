@@ -56,7 +56,7 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('product_list')
 
     def form_valid(self, form):
-        form.instance.owner = self.request.user  # Привязываем продукт к текущему пользователю
+        form.instance.owner = self.request.user
         return super().form_valid(form)
 
 
@@ -67,10 +67,9 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('product_list')
 
     def dispatch(self, request, *args, **kwargs):
-        # Проверка: является ли текущий пользователь владельцем продукта
         product = self.get_object()
         if product.owner != request.user:
-            raise PermissionDenied  # Если не владелец, запрещаем доступ
+            raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -78,6 +77,12 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     template_name = 'catalog/product_confirm_delete.html'
     success_url = reverse_lazy('product_list')
+
+    def dispatch(self, request, *args, **kwargs):
+        product = self.get_object()
+        if product.owner != request.user and not request.user.has_perm('catalog.delete_product'):
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
 
 
 class BlogPostListView(ListView):
